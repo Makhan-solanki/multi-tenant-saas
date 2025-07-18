@@ -1,0 +1,58 @@
+# docker-compose.yml
+version: '3.8'
+services:
+
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - '3001:3001'
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/auth-service
+      - JWT_SECRET=your_jwt_secret
+    depends_on:
+      - mongo
+
+  api-service:
+    build: ./api-service
+    container_name: api-service
+    ports:
+      - '3002:3002'
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/api-service
+      - JWT_SECRET=your_jwt_secret
+    depends_on:
+      - mongo
+
+  react-shell:
+    build: ./react-shell
+    container_name: react-shell
+    ports:
+      - '4173:4173'
+    environment:
+      - VITE_API_URL=http://localhost:3002
+      - VITE_AUTH_URL=http://localhost:3001
+    depends_on:
+      - api-service
+      - auth-service
+
+  support-tickets-app:
+    build: ./support-tickets-app
+    container_name: support-tickets-app
+    ports:
+      - '4174:4174'
+    environment:
+      - VITE_API_URL=http://localhost:3002
+    depends_on:
+      - api-service
+
+volumes:
+  mongo_data:

@@ -1,0 +1,24 @@
+/* Additional custom styles */
+.nav-link-active {
+  @apply bg-blue-600 text-white;
+}
+
+.nav-link-inactive {
+  @apply text-gray-300 hover:bg-gray-800 hover:text-white;
+}
+
+.stat-card {
+  @apply bg-white rounded-lg shadow p-6;
+}
+
+.button-primary {
+  @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors;
+}
+
+.button-secondary {
+  @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition-colors;
+}
+
+.input-field {
+  @apply border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+}

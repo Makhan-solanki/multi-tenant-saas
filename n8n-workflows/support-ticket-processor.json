@@ -1,0 +1,82 @@
+{
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "ticket-created",
+          "responseMode": "responseNode"
+        },
+        "name": "Webhook Trigger (Ticket Created)",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "id": "webhookTriggerTicketCreated",
+        "description": "Listens for new ticket creation events from the API Service"
+      },
+      {
+        "parameters": {
+          "functionCode": "// This function processes the incoming ticket data.\n// You can add more complex logic here, e.g., AI analysis, assigning to agents, etc.\n\nconst ticket = $input.first().json;\n\n// Simulate some processing or decision making\nlet newStatus = 'in-progress';\nlet processingResult = 'Ticket received and is now in progress.';\n\nif (ticket.priority === 'high') {\n  newStatus = 'in-progress'; // Or 'assigned_to_urgent_team'\n  processingResult = 'High priority ticket automatically escalated for immediate review.';\n}\n\nreturn [{\n  json: {\n    ticketId: ticket.ticketId, // Use ticketId from the incoming payload\n    customerId: ticket.customerId,\n    status: newStatus,\n    processingResult: processingResult,\n    workflowId: $workflow.id // Pass workflow ID for traceability\n  }\n}];"
+        },
+        "name": "Process Ticket Logic",
+        "type": "n8n-nodes-base.function",
+        "typeVersion": 1,
+        "id": "processTicketLogic",
+        "description": "Applies business logic to determine next steps for the ticket"
+      },
+      {
+        "parameters": {
+          "url": "={{$env.API_SERVICE_URL}}/api/webhook/{{$json.customerId}}/ticket-done",
+          "method": "POST",
+          "jsonBody": true,
+          "sendHeaders": true,
+          "headerParameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Webhook-Signature",
+              "value": "={{$crypto.createHmac('sha256', $env.WEBHOOK_SECRET).update(JSON.stringify($json)).digest('hex')}}"
+            }
+          ],
+          "options": {
+            "followRedirect": true,
+            "rejectUnauthorized": true
+          }
+        },
+        "name": "Callback Webhook (Update API)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 3,
+        "id": "callbackWebhookUpdateAPI",
+        "description": "Sends updated ticket status back to the API Service"
+      }
+    ],
+    "connections": {
+      "Webhook Trigger (Ticket Created)": {
+        "main": [
+          [
+            {
+              "node": "Process Ticket Logic",
+              "hop": "main"
+            }
+          ]
+        ]
+      },
+      "Process Ticket Logic": {
+        "main": [
+          [
+            {
+              "node": "Callback Webhook (Update API)",
+              "hop": "main"
+            }
+          ]
+        ]
+      }
+    },
+    "name": "Support Ticket Processor",
+    "active": false,
+    "id": "support-ticket-processor-workflow",
+    "meta": {
+      "workflowId": "support-ticket-processor-workflow"
+    }
+  }
+  

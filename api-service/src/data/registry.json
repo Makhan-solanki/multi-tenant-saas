@@ -1,0 +1,57 @@
+{
+    "LogisticsCo": [
+      {
+        "tenant": "LogisticsCo",
+        "screenUrl": "support-tickets",
+        "title": "Support Tickets",
+        "icon": "ticket",
+        "roleRequired": []
+      },
+      {
+        "tenant": "LogisticsCo",
+        "screenUrl": "admin-dashboard",
+        "title": "Admin Dashboard",
+        "icon": "dashboard",
+        "roleRequired": ["Admin"]
+      }
+    ],
+    "RetailGmbH": [
+      {
+        "tenant": "RetailGmbH",
+        "screenUrl": "support-tickets",
+        "title": "Help Desk",
+        "icon": "help-circle",
+        "roleRequired": []
+      },
+      {
+        "tenant": "RetailGmbH",
+        "screenUrl": "user-management",
+        "title": "User Management",
+        "icon": "users",
+        "roleRequired": ["Admin"]
+      }
+    ],
+    "TestTenant": [
+      {
+        "tenant": "TestTenant",
+        "screenUrl": "support-tickets",
+        "title": "Support Center",
+        "icon": "life-buoy",
+        "roleRequired": []
+      },
+      {
+        "tenant": "TestTenant",
+        "screenUrl": "admin-dashboard",
+        "title": "Control Panel",
+        "icon": "settings",
+        "roleRequired": ["Admin"]
+      },
+      {
+        "tenant": "TestTenant",
+        "screenUrl": "user-management",
+        "title": "Team Management",
+        "icon": "user-cog",
+        "roleRequired": ["Admin"]
+      }
+    ]
+  }
