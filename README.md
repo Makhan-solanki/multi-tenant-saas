@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # 🧾 Multi-Tenant Support Ticket System
 
 A scalable, secure, and modular support ticket management system built with a micro-frontend architecture, multi-tenant isolation, role-based access, and webhook-driven automation.
