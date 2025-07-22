@@ -2,8 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import federation from '@originjs/vite-plugin-federation'
 import path from 'path'
-
+const isDocker = process.env.DOCKER === 'true';
 export default defineConfig({
+  base: '/', 
   plugins: [
     react(),
     federation({
@@ -13,7 +14,9 @@ export default defineConfig({
         './App': './src/App.jsx'
       },
       remotes: {
-        'react-shell': 'http://localhost:4173/assets/remoteEntry.js'
+        'react-shell': isDocker
+    ? 'http://react-shell:4173/assets/remoteEntry.js'
+    : 'http://localhost:4173/assets/remoteEntry.js'
       },
       shared: {
         react: { singleton: true },
@@ -28,6 +31,7 @@ export default defineConfig({
     cssCodeSplit: false,
     minify: false,
     rollupOptions: {
+      external: ['react-shell/AuthContext'], 
       output: {
         assetFileNames: 'assets/[name].[ext]',
         chunkFileNames: 'assets/[name].js',
@@ -43,5 +47,8 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src')
     }
+  },
+  optimizeDeps: {
+    exclude: ['react-shell'] // ✅ Required to treat it as remote!
   }
 })

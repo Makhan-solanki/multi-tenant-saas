@@ -7,6 +7,7 @@ RUN npm install
 COPY . .
 RUN npm run build
 
+
 # Serve using Vite Preview
 FROM node:18-alpine
 
@@ -17,4 +18,4 @@ RUN npm install -g vite
 
 EXPOSE 4174
 
-CMD ["vite", "preview", "--port", "4174"]
+CMD ["vite", "preview", "--port", "4174", "--host", "0.0.0.0"]

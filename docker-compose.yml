@@ -1,58 +1,67 @@
-# docker-compose.yml
-version: '3.8'
 services:
-
-  mongo:
-    image: mongo:6
-    container_name: mongo
-    ports:
-      - '27017:27017'
-    volumes:
-      - mongo_data:/data/db
 
   auth-service:
     build: ./auth-service
     container_name: auth-service
     ports:
       - '3001:3001'
+    env_file:
+      - .env
     environment:
-      - MONGO_URI=mongodb://mongo:27017/auth-service
-      - JWT_SECRET=your_jwt_secret
-    depends_on:
-      - mongo
+      - MONGO_URI=${MONGO_URI}
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - app-network
 
   api-service:
-    build: ./api-service
+    build:
+      context: ./api-service
+      dockerfile: Dockerfile
     container_name: api-service
     ports:
       - '3002:3002'
+    env_file:
+      - .env
     environment:
-      - MONGO_URI=mongodb://mongo:27017/api-service
-      - JWT_SECRET=your_jwt_secret
-    depends_on:
-      - mongo
+      - MONGO_URI=${MONGO_URI}
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - app-network
 
   react-shell:
-    build: ./react-shell
+    build:
+      context: ./react-shell
+      dockerfile: Dockerfile
     container_name: react-shell
     ports:
       - '4173:4173'
+    env_file:
+      - .env
     environment:
-      - VITE_API_URL=http://localhost:3002
-      - VITE_AUTH_URL=http://localhost:3001
+      - VITE_AUTH_URL=${VITE_AUTH_URL}
+      - VITE_API_URL=${VITE_API_URL}
     depends_on:
       - api-service
       - auth-service
+    networks:
+      - app-network
 
   support-tickets-app:
-    build: ./support-tickets-app
+    build:
+      context: ./support-tickets-app
+      dockerfile: Dockerfile
     container_name: support-tickets-app
     ports:
       - '4174:4174'
+    env_file:
+      - .env
     environment:
-      - VITE_API_URL=http://localhost:3002
+      - VITE_AUTH_URL=${VITE_AUTH_URL}
+      - VITE_API_URL=${VITE_API_URL}
     depends_on:
       - api-service
+    networks:
+      - app-network
 
-volumes:
-  mongo_data:
+networks:
+  app-network:

@@ -1,18 +1,13 @@
-# Base image
 FROM node:18-alpine
 
-# Set working directory
 WORKDIR /app
 
-# Install dependencies
 COPY package*.json ./
-RUN npm install --production
 
-# Copy source files
+RUN npm install  # ✅ This line must be uncommented
+
 COPY . .
 
-# Expose auth port (assuming 3001)
 EXPOSE 3001
 
-# Start Auth service
-CMD ["node", "index.js"]
+CMD ["node", "src/server.js"]

@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const API_URL = import.meta.env.VITE_AUTH_API_URL || 'http://localhost:3001'
+const API_URL = import.meta.env.VITE_AUTH_URL || 'http://localhost:3001'
+console.log("auth service",import.meta.env.VITE_AUTH_URL);
 
 const authService = {
   login: async (email, password) => {

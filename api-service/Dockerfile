@@ -1,18 +1,13 @@
-# Base image
 FROM node:18-alpine
 
-# Create app directory
 WORKDIR /app
 
-# Install dependencies
 COPY package*.json ./
-RUN npm install --production
 
-# Copy source
+RUN npm install  # ✅ This line must be uncommented
+
 COPY . .
 
-# Expose port (assuming 3002)
 EXPOSE 3002
 
-# Start API service
-CMD ["node", "index.js"]
+CMD ["node", "src/server.js"]
